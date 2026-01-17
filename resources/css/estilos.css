@@ -1,0 +1,50 @@
+/* Contenedor: Filas de 2 en 2 */
+.dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 30px !important;
+    padding: 20px 10px !important;
+}
+
+/* Los Cuadros */
+.card-item {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 20px !important; /* Puntas redondeadas */
+    padding: 60px 20px !important;
+    text-decoration: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Iconos Gigantes */
+.card-item div {
+    font-size: 5rem !important; /* Ignora el inline style del blade */
+    margin-bottom: 15px !important;
+}
+
+/* Títulos */
+.card-item h3 {
+    font-size: 1.8rem !important;
+    color: #1e293b !important;
+    margin: 0 !important;
+    font-family: sans-serif !important;
+}
+
+/* Efecto Hover */
+.card-item:hover {
+    transform: translateY(-8px) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

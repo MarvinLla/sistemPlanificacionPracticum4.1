@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombrePrograma')->nullable;
             $table->string('tipoPrograma')->nullable;
-            $table->string('categoria')->nullable;  
+            $table->string('version')->nullable;
+            $table->string('responsablePrograma')->nullable;  
             $table->timestamps();
         });
     }

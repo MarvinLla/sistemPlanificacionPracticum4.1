@@ -14,12 +14,20 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
+{
+    // 1. Primero creamos los roles
+    $this->call([
+        RoleSeeder::class,
+    ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+    // 2. Creamos tu usuario administrador directamente aquí
+    $admin = User::factory()->create([
+        'name' => 'Administrador',
+        'email' => 'admin@gmail.com', // <--- USA ESTE PARA LOGUEARTE
+        'password' => bcrypt('123456'), // Pon una contraseña que recuerdes
+    ]);
+
+    // 3. Le asignamos el rol que acabamos de crear en el RoleSeeder
+    $admin->assignRole('admin');
+}
 }
