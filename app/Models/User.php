@@ -11,7 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles; // Añadimos HasRoles aquí
+    // Limpiamos la duplicidad y quitamos HasApiTokens que causaba el error
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * Atributos asignables (Mass assignable)
@@ -42,8 +43,8 @@ class User extends Authenticatable
     }
 
     /**
-     * MÉTODO DE AYUDA (Opcional)
-     * Para verificar rápidamente si es administrador en tus vistas
+     * MÉTODO DE AYUDA
+     * Verifica rápidamente si el usuario tiene el rol de administrador
      */
     public function isAdmin(): bool
     {

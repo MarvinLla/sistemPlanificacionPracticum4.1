@@ -6,24 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('o_d_s', function (Blueprint $table) {
+        // Cambiamos el nombre para que coincida con tu Modelo
+        Schema::create('objetivos_ods', function (Blueprint $table) {
             $table->id();
-            $table->string('nombreODS')->nullable;
-            $table->string('proyectoRelacionado')->nullable;
+            // Agregamos paréntesis a nullable() y usamos text para descripciones largas
+            $table->text('nombreObjetivo')->nullable(); 
+            $table->string('descripcion')->nullable();
+            $table->text('metasAsociadas')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('o_d_s');
+        Schema::dropIfExists('objetivos_ods');
     }
 };

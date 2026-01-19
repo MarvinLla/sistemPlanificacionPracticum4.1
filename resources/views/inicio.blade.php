@@ -66,7 +66,7 @@
     }
 
     .badge-revision { background: #eab308 !important; }
-    .badge-danger { background: #ef4444 !important; } {{-- Rojo para alertas críticas --}}
+    .badge-danger { background: #ef4444 !important; }
 
     @media (max-width: 768px) {
         .dashboard-grid {
@@ -111,13 +111,28 @@
     </a>
     @endcan
 
-    {{-- OBJETIVOS --}}
-    <a href="#" class="card-item">
+    {{-- OBJETIVOS ODS--}}
+    @can('ver ODS')
+    <a href="{{ route('ODS.index') }}" class="card-item">
+        <span class="badge-count">{{ $totalODS ?? 0 }}</span>
         <div class="card-content-visual">
-            <img src="{{ asset('img/iconos/objetivo.png') }}" alt="objetivo" class="card-icon-img" onerror="this.parentElement.innerHTML='🎯'">
+            <img src="{{ asset('img/iconos/objetivo.png') }}" alt="objetivoDS" class="card-icon-img" onerror="this.parentElement.innerHTML='🎯'">
         </div> 
-        <h3>Objetivos</h3>
+        <h3>Objetivos ODS</h3>
     </a>
+    @endcan
+
+    {{-- NUEVO: PLAN NACIONAL DE DESARROLLO (PND) --}}
+    {{-- Asumo que el permiso es 'ver proyectos' o puedes crear uno llamado 'ver PND' --}}
+    @can('ver proyectos') 
+    <a href="{{ route('pnd.index') }}" class="card-item" style="border: 2px dashed #3b82f6;">
+        <div class="card-content-visual">
+            <img src="{{ asset('img/iconos/objetivo.png') }}" alt="PND" class="card-icon-img" style="filter: hue-rotate(180deg);" onerror="this.parentElement.innerHTML='🇪🇨'">
+        </div> 
+        <h3 style="color: #1e40af !important;">Plan Nacional (PND)</h3>
+        <small style="color: #64748b;">Alineación Estratégica</small>
+    </a>
+    @endcan
 
     {{-- AVANCES / SEGUIMIENTO --}}
     @can('ver proyectos')
@@ -139,7 +154,8 @@
     </a>
     @endcan
 
-    {{-- ALERTAS (ACTUALIZADO) --}}
+    @can('ver alertas')
+    {{-- ALERTAS --}}
     <a href="{{ route('alertas.index') }}" class="card-item">
         @if(isset($totalAlertas) && $totalAlertas > 0)
             <span class="badge-count badge-danger">{{ $totalAlertas }}</span>
@@ -149,5 +165,6 @@
         </div>
         <h3>Alertas</h3>
     </a>
+    @endcan
 </div>
 @endsection

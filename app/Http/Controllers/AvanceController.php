@@ -72,14 +72,20 @@ class AvanceController extends Controller implements HasMiddleware
 
     public function index()
 {
-    // Usamos eager loading para cargar los avances de cada proyecto
-    $proyectos = Proyecto::with('avances')->get();
+    // 1. Obtenemos todos los proyectos con sus relaciones para que no den error
+    // Cargamos 'avances' y 'entidad' para que los cálculos de la vista funcionen
+    $proyectos = Proyecto::with(['avances', 'entidad'])->get();
+
+    // 2. Pasamos la variable a la vista
     return view('avances.index', compact('proyectos'));
 }
 public function kardex()
 {
-    // Obtenemos todos los avances con su proyecto relacionado, del más reciente al más antiguo
-    $movimientos = Avance::with('proyecto')->orderBy('fecha_avance', 'desc')->get();
+    // Cambiamos 'fecha' por el nombre real de la columna: 'fecha_avance'
+    $movimientos = \App\Models\Avance::with('proyecto')
+        ->orderBy('fecha_avance', 'desc') 
+        ->get();
+
     return view('avances.kardex', compact('movimientos'));
 }
 }

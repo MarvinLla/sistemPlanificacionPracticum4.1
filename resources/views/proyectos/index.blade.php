@@ -24,7 +24,7 @@
                     <th style="padding: 12px; color: #64748b;">Proyecto</th>
                     <th style="padding: 12px; color: #64748b;">Entidad</th>
                     <th style="padding: 12px; color: #64748b;">Presupuesto Inicial</th>
-                    <th style="padding: 12px; color: #64748b;">Saldo Disponible</th> <th style="padding: 12px; color: #64748b; text-align: center;">Estado</th>
+                    <th style="padding: 12px; color: #64748b;">Saldo Disponible</th> <th style="padding: 12px; color: #64748b; text-align: center; min-width: 150px;">Estado</th>
                     <th style="padding: 12px; color: #64748b; text-align: center;">Acciones</th>
                 </tr>
             </thead>
@@ -50,7 +50,7 @@
                         @endif
                     </td>
 
-                    <td style="padding: 15px; text-align: center;">
+                    <td style="padding: 15px; text-align: center; white-space: nowrap;">
                         @if($proyecto->estado == 'Pendiente' || $proyecto->estado == 'En Revisión')
                             <span style="background: #fef9c3; color: #854d0e; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; border: 1px solid #fde047; text-transform: uppercase;">
                                 🟡 {{ $proyecto->estado }}
@@ -85,6 +85,9 @@
                             @can('editar proyectos')
                                 <a href="{{ route('proyectos.edit', $proyecto->id) }}" style="text-decoration: none; font-size: 1.1rem;" title="Editar">📝</a>
                             @endcan
+                            <a href="{{ route('proyectos.pdf', $proyecto->id) }}" class="btn btn-sm btn-danger">
+                             📥 Exportar PDF
+                            </a>
                         </div>
                     </td>
                 </tr>

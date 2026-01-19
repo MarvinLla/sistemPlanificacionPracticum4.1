@@ -9,7 +9,8 @@ use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\AvanceController; // 1. IMPORTAR EL NUEVO CONTROLADOR
 use App\Models\Entidad;
 use App\Models\Proyecto;
-
+use App\Http\Controllers\ODSController;
+use App\Http\Controllers\PndObjetivoController;
 // Redirección inicial
 Route::get('/', function () {
     return redirect()->route('inicio');
@@ -21,9 +22,10 @@ Route::middleware(['auth'])->group(function () {
     // DASHBOARD PRINCIPAL
     Route::get('/inicio', function () {
         $totalEntidades = Entidad::count();
+        $totalODS = \App\Models\ODS::count();
         $proyectosRevision = Proyecto::where('estado', 'en revisión')->count();
         $proyectosAprobados = Proyecto::where('estado', 'aprobado')->count();
-        return view('inicio', compact('totalEntidades', 'proyectosRevision', 'proyectosAprobados'));
+        return view('inicio', compact('totalEntidades', 'totalODS', 'proyectosRevision', 'proyectosAprobados'));
     })->name('inicio');
 
     // PERFIL DE USUARIO
@@ -41,6 +43,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('entidades', EntidadController::class);
     });
 
+    //OBJETIVOS ODS
+    Route::middleware(['can:ver ODS'])->group(function () {
+        Route::resource('ODS', ODSController::class);
+    });
+
     // PROGRAMAS
     Route::middleware(['can:ver programas'])->group(function () {
         Route::resource('programas', ProgramaController::class);
@@ -51,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
         // Rutas de Proyectos
         Route::resource('proyectos', ProyectoController::class);
         
-        // Ruta para aprobar (Cambiado a permiso 'cambiar estados' para consistencia)
+        // Ruta para aprobar
         Route::patch('/proyectos/{proyecto}/aprobar', [ProyectoController::class, 'aprobar'])
             ->name('proyectos.aprobar')
             ->middleware('can:cambiar estados');
@@ -61,6 +68,10 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/kardex', [App\Http\Controllers\AvanceController::class, 'kardex'])->name('kardex.index');
     Route::get('/alertas', [App\Http\Controllers\ProyectoController::class, 'alertas'])->name('alertas.index');
+
+    Route::resource('pnd', PndObjetivoController::class);
+    Route::get('/pnd-exportar-pdf', [PndObjetivoController::class, 'exportarPDF'])->name('pnd.pdf');
+    Route::get('/proyectos/{id}/pdf', [ProyectoController::class, 'exportarFichaProyecto'])->name('proyectos.pdf');
 });
 
 require __DIR__.'/auth.php';

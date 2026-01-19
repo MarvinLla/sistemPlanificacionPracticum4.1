@@ -61,9 +61,9 @@
                     <div>
                         <div style="font-size: 0.75rem; color: #94a3b8;">Saldo Disponible</div>
                         <div style="font-weight: bold; color: #059669;">${{ number_format($proyecto->presupuestoRestante(), 2) }}</div>
-                    </div>
-                    <a href="{{ route('proyectos.show', $proyecto->id) }}" style="text-decoration: none; color: #3b82f6; font-size: 0.9rem; font-weight: 600;">
-                        Ver Historial →
+                    </div>  
+                    <a href="{{ route('kardex.index', $proyecto->id) }}" style="text-decoration: none; color: #3b82f6; font-size: 0.9rem; font-weight: 600;">
+                    Ver Kardex →
                     </a>
                 </div>
             </div>
