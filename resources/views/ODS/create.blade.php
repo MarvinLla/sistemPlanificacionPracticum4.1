@@ -69,7 +69,7 @@
         // 1. Agregar al array
         metasArray.push(valor);
 
-        // 2. Actualizar el campo oculto (las unimos con un separador especial como "||" o "\n")
+        // 2. Actualizar el campo oculto
         document.getElementById('metasAsociadasHidden').value = metasArray.join("\n");
 
         // 3. Actualizar la lista visual

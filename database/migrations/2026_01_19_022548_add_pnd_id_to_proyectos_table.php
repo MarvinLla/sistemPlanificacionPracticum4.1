@@ -10,19 +10,19 @@ return new class extends Migration
     {
         Schema::table('proyectos', function (Blueprint $table) {
             // Creamos la columna y la relación
-            // Usamos nullable() por si ya tienes proyectos creados, para que no den error
+            
             $table->foreignId('pnd_objetivo_id')
                   ->nullable()
-                  ->after('id') // Opcional: la pone después de la columna ID
+                  ->after('id') 
                   ->constrained('pnd_objetivos')
-                  ->onDelete('set null'); // Si borras un objetivo, el proyecto no se borra
+                  ->onDelete('set null');
         });
     }
 
     public function down()
     {
         Schema::table('proyectos', function (Blueprint $table) {
-            // Pasos para revertir la migración en orden inverso
+           
             $table->dropForeign(['pnd_objetivo_id']);
             $table->dropColumn('pnd_objetivo_id');
         });

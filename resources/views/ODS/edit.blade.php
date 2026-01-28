@@ -58,8 +58,7 @@
 </div>
 
 <script>
-    // Inicializamos el array con las metas que ya existen en la base de datos
-    // Usamos split para convertir el string de la DB en un array de JS
+    
     let metasArray = {!! json_encode(explode("\n", $objetivoODS->metasAsociadas)) !!}.filter(item => item.trim() !== "");
 
     // Renderizar al cargar la página

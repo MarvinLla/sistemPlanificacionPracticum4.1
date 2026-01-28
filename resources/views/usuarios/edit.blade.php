@@ -7,7 +7,7 @@
             
             <div style="margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
                 <h2 style="font-size: 1.5rem; font-weight: bold; color: #1e293b;">
-                    👤 Editar Usuario: {{ $usuario->name }}
+                     Editar Usuario: {{ $usuario->name }}
                 </h2>
             </div>
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash; // ¡IMPORTANTE! Agregamos esta línea
+use Illuminate\Support\Facades\Hash; 
 
 class RoleSeeder extends Seeder
 {
@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $user  = Role::firstOrCreate(['name' => 'usuario']);
 
-        // 2. CREAMOS EL USUARIO (usando el rol que acabamos de crear arriba)
+        // 2. CREAMOS EL USUARIO 
         $adminUser = User::updateOrCreate(
     ['email' => 'admin@gmail.com'], // Condición de búsqueda
     [
@@ -29,7 +29,7 @@ class RoleSeeder extends Seeder
         $adminUser->assignRole($admin);
 
         // 3. CREAR PERMISOS Y ASIGNARLOS AL ROL
-        // Entidades (Nota: quitamos [$admin, $user] y dejamos solo $admin para que el usuario no vea el cuadro)
+        // Entidades 
         Permission::firstOrCreate(['name' => 'ver entidades'])->assignRole($admin);
         Permission::firstOrCreate(['name' => 'crear entidades'])->assignRole($admin);
         Permission::firstOrCreate(['name' => 'editar entidades'])->assignRole($admin);

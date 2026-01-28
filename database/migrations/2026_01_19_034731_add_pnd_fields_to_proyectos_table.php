@@ -12,12 +12,12 @@ return new class extends Migration
     public function up()
 {
     Schema::table('proyectos', function (Blueprint $table) {
-        // Añade el ID para el objetivo PND (si no lo tenías ya)
+      
         if (!Schema::hasColumn('proyectos', 'pnd_objetivo_id')) {
             $table->unsignedBigInteger('pnd_objetivo_id')->nullable()->after('programa_id');
         }
         
-        // Añade la columna de la justificación que está causando el error
+    
         $table->text('justificacion_pnd')->nullable()->after('pnd_objetivo_id');
     });
 }

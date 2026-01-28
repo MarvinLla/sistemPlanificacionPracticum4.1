@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('proyectos.aprobar')
             ->middleware('can:cambiar estados');
 
-        // 2. RUTAS DE AVANCES (Dentro de ver proyectos)
+        // 2. RUTAS DE AVANCES 
         Route::resource('avances', AvanceController::class);
     });
     Route::get('/kardex', [App\Http\Controllers\AvanceController::class, 'kardex'])->name('kardex.index');

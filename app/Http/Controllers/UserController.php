@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Hash; // Importación correcta
-use Illuminate\Support\Facades\Auth; // Para la validación de borrado
+use Illuminate\Support\Facades\Hash; 
+use Illuminate\Support\Facades\Auth; 
 
 class UserController extends Controller
 {
@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Cargamos roles y permisos para evitar múltiples consultas a la BD
+        // Cargamos roles y permisos para evitar múltiples consultas
         $usuarios = User::with(['roles', 'permissions'])->get(); 
         return view('usuarios.index', compact('usuarios'));
     }
@@ -62,7 +62,7 @@ class UserController extends Controller
     {
         $usuario = User::findOrFail($id);
     $roles = Role::all();
-    // Esto es vital para que aparezcan los cuadritos en tu vista
+    //para aparezcan los cuadritos en la vista
     $permisos = Permission::all(); 
     
     return view('usuarios.edit', compact('usuario', 'roles', 'permisos'));
@@ -95,7 +95,7 @@ class UserController extends Controller
     // Sincronizar el Rol
     $usuario->syncRoles($request->rol);
 
-    // Sincronizar Permisos Individuales (los cuadritos que marques)
+    // Sincronizar Permisos Individuales
     // Si no marcas ninguno, enviamos un array vacío para limpiar
     $usuario->syncPermissions($request->permisos ?? []);
 

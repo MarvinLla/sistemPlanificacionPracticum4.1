@@ -72,7 +72,7 @@ class AvanceController extends Controller implements HasMiddleware
 
     public function index()
 {
-    // 1. Obtenemos todos los proyectos con sus relaciones para que no den error
+    
     // Cargamos 'avances' y 'entidad' para que los cálculos de la vista funcionen
     $proyectos = Proyecto::with(['avances', 'entidad'])->get();
 
@@ -81,7 +81,7 @@ class AvanceController extends Controller implements HasMiddleware
 }
 public function kardex()
 {
-    // Cambiamos 'fecha' por el nombre real de la columna: 'fecha_avance'
+    
     $movimientos = \App\Models\Avance::with('proyecto')
         ->orderBy('fecha_avance', 'desc') 
         ->get();

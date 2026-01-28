@@ -12,12 +12,12 @@ return new class extends Migration
     public function up()
 {
     Schema::table('proyectos', function (Blueprint $table) {
-        // Agregamos programa_id si no existe
+       
         if (!Schema::hasColumn('proyectos', 'programa_id')) {
             $table->unsignedBigInteger('programa_id')->nullable()->after('entidad_id');
         }
 
-        // Agregamos metas_finales si no existe
+        
         if (!Schema::hasColumn('proyectos', 'metas_finales')) {
             $table->text('metas_finales')->nullable()->after('objetivos');
         }

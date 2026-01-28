@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         // Relación con Proyectos
         $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
-        // Relación con ODS (Asegúrate de que el nombre de la tabla sea 'objetivos_ods')
+        
         $table->foreignId('objetivo_ods_id')->constrained('objetivos_ods')->onDelete('cascade');
         $table->timestamps();
     });

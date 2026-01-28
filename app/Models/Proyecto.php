@@ -29,14 +29,10 @@ class Proyecto extends Model
         'justificacion_pnd',  
     ];
 
-    // ELIMINAMOS EL CAST DE 'ods' => 'array' 
-    // Solo dejamos casts para fechas si fuera necesario, o lo dejamos vacío.
+   
     protected $casts = [];
 
-    /**
-     * Relación Many-to-Many con ODS
-     * Verifica que en tu DB la columna sea 'objetivo_ods_id' o 'ods_id'
-     */
+    
     public function ods()
     {
         return $this->belongsToMany(ODS::class, 'objetivo_ods_proyecto', 'proyecto_id', 'objetivo_ods_id');
@@ -71,13 +67,13 @@ class Proyecto extends Model
     }
     public function pndObjetivo()
 {
-    // Verifica que la llave foránea en tu tabla proyectos sea 'pnd_objetivo_id'
+    
     return $this->belongsTo(PndObjetivo::class, 'pnd_objetivo_id');
 }
 
 public function presupuestoConsumido()
 {
-    // Cambiamos 'monto' por 'monto_gastado' que es el nombre real en tu tabla
+    
     return $this->avances()->sum('monto_gastado');
 }
 

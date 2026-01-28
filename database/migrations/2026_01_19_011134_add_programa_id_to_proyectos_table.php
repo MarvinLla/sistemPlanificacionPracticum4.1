@@ -12,10 +12,10 @@ return new class extends Migration
     public function up()
 {
     Schema::table('proyectos', function (Blueprint $table) {
-        // Añadimos la columna como llave foránea
+       
         $table->unsignedBigInteger('programa_id')->nullable()->after('entidad_id');
         
-        // Opcional: Definir la relación oficial
+      
         $table->foreign('programa_id')->references('id')->on('programas')->onDelete('set null');
     });
 }

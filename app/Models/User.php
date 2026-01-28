@@ -43,7 +43,7 @@ class User extends Authenticatable
     }
 
     /**
-     * MÉTODO DE AYUDA
+     * 
      * Verifica rápidamente si el usuario tiene el rol de administrador
      */
     public function isAdmin(): bool

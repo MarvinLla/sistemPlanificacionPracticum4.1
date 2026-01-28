@@ -9,11 +9,11 @@ class PndObjetivo extends Model
 {
     use HasFactory;
 
-    protected $table = 'pnd_objetivos'; // Asegúrate de que coincida con tu migración
+    protected $table = 'pnd_objetivos';
 
     protected $fillable = [
         'eje',
         'nombre_objetivo',
-        'descripcion', // Agrégalo si también lo tienes en la migración
+        'descripcion', 
     ];
 }

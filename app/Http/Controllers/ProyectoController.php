@@ -101,14 +101,14 @@ class ProyectoController extends Controller implements HasMiddleware
 
     public function edit($id)
 {
-    // Usamos 'with' para garantizar que 'ods' sea una colección, aunque esté vacía
+    
     $proyecto = Proyecto::with('ods')->findOrFail($id);
     
     $entidades = Entidad::all();
     $programas = Programa::all();
     $ods = ODS::all();
     
-    // Nueva línea necesaria para la sección de Plan Institucional
+    
     $objetivosPND = \App\Models\PndObjetivo::all(); 
 
     return view('proyectos.edit', compact('proyecto', 'entidades', 'programas', 'ods', 'objetivosPND'));
@@ -129,7 +129,7 @@ class ProyectoController extends Controller implements HasMiddleware
         'pnd_objetivo_id' => 'nullable|exists:pnd_objetivos,id', // Validación añadida
     ]);
 
-    // 2. Asignación manual de datos básicos
+    
     $proyecto->nombre = $request->nombre;
     $proyecto->descripcion = $request->descripcion;
     $proyecto->objetivos = $request->objetivos;
@@ -144,7 +144,7 @@ class ProyectoController extends Controller implements HasMiddleware
     $proyecto->telefono_contacto = $request->telefono_contacto;
     $proyecto->estado = $request->estado;
 
-    // --- NUEVOS CAMPOS PND AÑADIDOS CON CUIDADO ---
+    
     $proyecto->pnd_objetivo_id = $request->pnd_objetivo_id;
     $proyecto->justificacion_pnd = $request->justificacion_pnd;
     // ----------------------------------------------
@@ -159,7 +159,7 @@ class ProyectoController extends Controller implements HasMiddleware
     // 4. GUARDAR CAMBIOS EN TABLA PROYECTOS
     $proyecto->save();
 
-    // 5. ACTUALIZAR RELACIÓN ODS (Tabla Intermedia)
+    // 5. ACTUALIZAR RELACIÓN ODS
     if ($request->has('ods')) {
         $proyecto->ods()->sync($request->ods);
     } else {

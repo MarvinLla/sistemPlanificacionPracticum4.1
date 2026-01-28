@@ -9,8 +9,7 @@ class ODS extends Model
 {
     use HasFactory;
 
-    // Si tu tabla no se llama 'o_d_s' (por el plural automático), 
-    // especifica el nombre real aquí:
+   
     protected $table = 'objetivos_ods'; 
 
     protected $fillable = [
@@ -26,9 +25,9 @@ class ODS extends Model
     {
         return $this->belongsToMany(
             Proyecto::class, 
-            'objetivo_ods_proyecto', // Tabla intermedia
-            'objetivo_ods_id',       // Llave foránea de este modelo en la intermedia
-            'proyecto_id'            // Llave foránea del otro modelo en la intermedia
+            'objetivo_ods_proyecto', 
+            'objetivo_ods_id',       
+            'proyecto_id'            
         );
     }
 }
