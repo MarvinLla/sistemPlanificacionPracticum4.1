@@ -3,71 +3,122 @@
 namespace App\Http\Controllers;
 
 use App\Models\PndObjetivo;
+use App\Models\Politica; // Importante para manejar las políticas
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PndObjetivoController extends Controller
 {
-    // Listado de objetivos del PND
     public function index()
     {
-        $objetivos = PndObjetivo::all();
+        $objetivos = PndObjetivo::with('politicas')->get();
         return view('pnd.index', compact('objetivos'));
     }
 
-    // Formulario de creación
+    public function alineacion()
+    {
+        /**
+         * EXPLICACIÓN:
+         * 1. Traemos los objetivos del PND.
+         * 2. Cargamos 'proyectos': esto garantiza que cada proyecto se distribuya 
+         * solo en el objetivo que tiene asignado (pnd_objetivo_id).
+         * 3. Cargamos 'proyectos.entidad', 'proyectos.avances' y 'proyectos.indicadores' 
+         * para que la información de ejecución se distribuya correctamente por cada proyecto.
+         */
+        $objetivos = PndObjetivo::with([
+            'politicas', 
+            'proyectos.entidad', 
+            'proyectos.avances', 
+            'proyectos.indicadores'
+        ])->get();
+
+        return view('alineacionPND.index', compact('objetivos'));
+    }
+
     public function create()
     {
         return view('pnd.create');
     }
 
-    // Guardar en la base de datos
     public function store(Request $request)
-{
-    // 1. Validamos los datos
-    $data = $request->validate([
-        'eje' => 'required|string|max:255',
-        'nombre_objetivo' => 'required|string',
-        'descripcion' => 'nullable|string',
-    ]);
+    {
+        $request->validate([
+            'eje' => 'required|string|max:255',
+            'nombre_objetivo' => 'required|string',
+            'descripcion' => 'nullable|string',
+            'politicas_texto' => 'nullable|string',
+        ]);
 
-    // 2. Creamos el registro usando solo los datos validados
-    // Esto ignora automáticamente el _token
-    PndObjetivo::create($data);
+        $objetivo = PndObjetivo::create($request->only(['eje', 'nombre_objetivo', 'descripcion']));
 
-    return redirect()->route('pnd.index')->with('success', 'Objetivo del PND creado correctamente.');
-}
+        if ($request->filled('politicas_texto')) {
+            $lineas = explode("\n", str_replace("\r", "", $request->politicas_texto));
+            
+            foreach ($lineas as $linea) {
+                $nombrePolitica = trim($linea);
+                if ($nombrePolitica !== '') {
+                    $objetivo->politicas()->create([
+                        'nombre' => $nombrePolitica,
+                    ]);
+                }
+            }
+        }
 
-    // Formulario de edición
+        return redirect()->route('pnd.index')->with('success', 'Objetivo del PND y sus políticas creados correctamente.');
+    }
+
     public function edit($id)
     {
-        $objetivo = PndObjetivo::findOrFail($id);
+        $objetivo = PndObjetivo::with('politicas')->findOrFail($id);
         return view('pnd.edit', compact('objetivo'));
     }
 
-    // Actualizar
     public function update(Request $request, $id)
     {
         $objetivo = PndObjetivo::findOrFail($id);
-        $objetivo->update($request->all());
 
-        return redirect()->route('pnd.index')->with('success', 'Objetivo actualizado.');
+        $request->validate([
+            'eje' => 'required|string|max:255',
+            'nombre_objetivo' => 'required|string',
+            'descripcion' => 'nullable|string',
+            'politicas_texto' => 'nullable|string',
+        ]);
+
+        $objetivo->update($request->only(['eje', 'nombre_objetivo', 'descripcion']));
+
+        // Sincronización de políticas
+        if ($request->has('politicas_texto')) {
+            // Eliminamos las anteriores asociadas a este ID
+            $objetivo->politicas()->delete(); 
+
+            $lineas = explode("\n", str_replace("\r", "", $request->politicas_texto));
+            foreach ($lineas as $linea) {
+                $nombrePolitica = trim($linea);
+                if ($nombrePolitica !== '') {
+                    $objetivo->politicas()->create([
+                        'nombre' => $nombrePolitica,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('pnd.index')->with('success', 'Objetivo y políticas actualizados correctamente.');
     }
 
-    // Eliminar
     public function destroy($id)
     {
-        PndObjetivo::destroy($id);
-        return redirect()->route('pnd.index')->with('success', 'Objetivo eliminado.');
+        $objetivo = PndObjetivo::findOrFail($id);
+        
+        $objetivo->politicas()->delete();
+        $objetivo->delete();
+
+        return redirect()->route('pnd.index')->with('success', 'Objetivo y sus políticas eliminados.');
     }
+
     public function exportarPDF()
-{
-    $objetivos = \App\Models\PndObjetivo::all();
-    
-    // Cargar una vista específica para el PDF
-    $pdf = Pdf::loadView('pnd.pdf', compact('objetivos'));
-    
-    // Descargar el archivo
-    return $pdf->download('Plan_Nacional_Desarrollo_Ecuador.pdf');
-}
+    {
+        $objetivos = PndObjetivo::with('politicas')->get();
+        $pdf = Pdf::loadView('pnd.pdf', compact('objetivos'));
+        return $pdf->download('Plan_Nacional_Desarrollo_Ecuador.pdf');
+    }
 }

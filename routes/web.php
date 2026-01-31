@@ -6,11 +6,12 @@ use App\Http\Controllers\EntidadController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProyectoController;
-use App\Http\Controllers\AvanceController; // 1. IMPORTAR EL NUEVO CONTROLADOR
+use App\Http\Controllers\AvanceController; // 
 use App\Models\Entidad;
 use App\Models\Proyecto;
 use App\Http\Controllers\ODSController;
 use App\Http\Controllers\PndObjetivoController;
+use App\Http\Controllers\AlineacionController;
 // Redirección inicial
 Route::get('/', function () {
     return redirect()->route('inicio');
@@ -72,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pnd', PndObjetivoController::class);
     Route::get('/pnd-exportar-pdf', [PndObjetivoController::class, 'exportarPDF'])->name('pnd.pdf');
     Route::get('/proyectos/{id}/pdf', [ProyectoController::class, 'exportarFichaProyecto'])->name('proyectos.pdf');
-});
+    Route::get('/alineacion-total', [AlineacionController::class, 'index'])->name('alineacion.index');
+    });
 
 require __DIR__.'/auth.php';

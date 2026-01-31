@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+<div style="max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
         <h2 style="font-size: 1.6rem; font-weight: bold; color: #1e293b; margin: 0;">
             Gestión del Plan Nacional de Desarrollo (PND)
@@ -21,26 +21,38 @@
         <thead>
             <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
                 <th style="padding: 12px; text-align: left; color: #64748b;">Eje Estratégico</th>
-                <th style="padding: 12px; text-align: left; color: #64748b;">Objetivo</th>
+                <th style="padding: 12px; text-align: left; color: #64748b;">Objetivo Nacional</th>
+                <th style="padding: 12px; text-align: left; color: #64748b;">Políticas Públicas</th>
                 <th style="padding: 12px; text-align: center; color: #64748b;">Acciones</th>
             </tr>
         </thead>
         <tbody>
             @foreach($objetivos as $obj)
             <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 15px;">
+                <td style="padding: 15px; vertical-align: top;">
                     <span style="background: #eff6ff; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
                         {{ $obj->eje }}
                     </span>
                 </td>
-                <td style="padding: 15px; color: #1e293b; font-weight: 500;">
+                <td style="padding: 15px; color: #1e293b; font-weight: 500; vertical-align: top; max-width: 300px;">
                     {{ $obj->nombre_objetivo }}
                 </td>
-                <td style="padding: 15px; text-align: center;">
-                    <a href="{{ route('pnd.edit', $obj->id) }}" style="color: #3b82f6; text-decoration: none; margin-right: 10px;">Editar</a>
+                <td style="padding: 15px; vertical-align: top;">
+                    @if($obj->politicas->count() > 0)
+                        @foreach($obj->politicas as $pol)
+                            <div style="font-size: 0.75rem; background: #f8fafc; color: #475569; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px; border-left: 3px solid #3b82f6;">
+                                {{ $pol->nombre }}
+                            </div>
+                        @endforeach
+                    @else
+                        <span style="color: #94a3b8; font-size: 0.8rem; font-style: italic;">Sin políticas definidas</span>
+                    @endif
+                </td>
+                <td style="padding: 15px; text-align: center; vertical-align: top;">
+                    <a href="{{ route('pnd.edit', $obj->id) }}" style="color: #3b82f6; text-decoration: none; margin-right: 10px; font-weight: 600;">Editar</a>
                     <form action="{{ route('pnd.destroy', $obj->id) }}" method="POST" style="display:inline;">
                         @csrf @method('DELETE')
-                        <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer;" onclick="return confirm('¿Eliminar este objetivo?')">Eliminar</button>
+                        <button type="submit" style="color: #ef4444; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="return confirm('¿Eliminar este objetivo y sus políticas?')">Eliminar</button>
                     </form>
                 </td>
             </tr>

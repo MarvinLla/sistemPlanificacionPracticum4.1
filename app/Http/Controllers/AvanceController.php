@@ -1,21 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Proyecto; // IMPORTANTE
-use App\Models\Avance;   // IMPORTANTE
+use App\Models\Proyecto; 
+use App\Models\Avance;   
+use App\Models\IndicadorProyecto; // Agregado para validar indicadores
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Storage;
 
 class AvanceController extends Controller implements HasMiddleware
 {
-    /* public static function middleware(): array
-{
-    
-}
-*/
-    
     public static function middleware(): array
     {
         return [
@@ -24,68 +21,73 @@ class AvanceController extends Controller implements HasMiddleware
         ];
     }
 
-    /**
-     * Muestra el formulario para crear un avance
-     */
     public function create()
     {
-        // Necesitamos enviar los proyectos para que el usuario elija uno
-        $proyectos = Proyecto::all();
+        // Cargamos indicadores para que el JS del formulario funcione
+        $proyectos = Proyecto::with('indicadores')->get();
         return view('avances.create', compact('proyectos'));
     }
 
-    /**
-     * Guarda el avance y valida el presupuesto
-     */
     public function store(Request $request)
     {
-        $proyecto = Proyecto::findOrFail($request->proyecto_id);
-        $restante = $proyecto->presupuestoRestante();
+        // 1. Validar que el indicador pertenezca al proyecto
+        $indicador = IndicadorProyecto::findOrFail($request->indicador_proyecto_id);
+        
+        // Calcular cuánto le queda a este indicador específico
+        $gastadoEnIndicador = Avance::where('indicador_proyecto_id', $indicador->id)->sum('monto_gastado');
+        $restanteIndicador = $indicador->valor_meta_fijo - $gastadoEnIndicador;
 
+        // 2. Validación estricta
         $request->validate([
             'proyecto_id' => 'required|exists:proyectos,id',
+            'indicador_proyecto_id' => 'required|exists:indicador_proyectos,id',
             'titulo' => 'required|string|max:255',
-            'descripcion'   => 'required|string', 
-            'monto_gastado' => 'required|numeric|min:0|max:' . $restante, 
-            'archivo' => 'nullable|file|mimes:pdf,docx,zip|max:5120', // subí a 5MB
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'descripcion' => 'nullable|string', 
+            'monto_gastado' => 'required|numeric|min:0.01|max:' . $restanteIndicador, 
+            'archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,docx,zip|max:5120', 
             'fecha_avance' => 'required|date',
         ], [
-            'monto_gastado.max' => '¡Error! El monto supera el presupuesto disponible ($' . number_format($restante, 2) . ').'
+            'monto_gastado.max' => '¡Error! El monto excede el saldo de esta meta específica ($' . number_format($restanteIndicador, 2) . ').'
         ]);
 
-        $data = $request->all();
+        // 3. Preparar datos
+        $data = $request->only([
+            'proyecto_id', 
+            'indicador_proyecto_id', 
+            'titulo', 
+            'descripcion', 
+            'monto_gastado', 
+            'fecha_avance'
+        ]);
 
-        // Manejo de Archivos (Se guardan en storage/app/public)
+        // 4. Manejo de Archivo (Evidencia)
         if ($request->hasFile('archivo')) {
-            $data['archivo'] = $request->file('archivo')->store('avances/documentos', 'public');
-        }
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('avances/fotos', 'public');
+            // Guardamos el archivo y obtenemos la ruta
+            $rutaArchivo = $request->file('archivo')->store('avances/documentos', 'public');
+            $data['archivo_ruta'] = $rutaArchivo; // Asegúrate que tu migración tenga este nombre o cámbialo
         }
 
+        // 5. Crear el registro
         Avance::create($data);
 
-        return redirect()->route('proyectos.index')
-            ->with('success', 'Avance guardado. Saldo restante del proyecto: $' . number_format($proyecto->presupuestoRestante(), 2));
+        // 6. Redirigir al INDEX de avances para ver los cambios aplicados
+        return redirect()->route('avances.index')
+            ->with('success', '¡Avance registrado! La meta se ha actualizado correctamente.');
     }
 
     public function index()
-{
-    
-    // Cargamos 'avances' y 'entidad' para que los cálculos de la vista funcionen
-    $proyectos = Proyecto::with(['avances', 'entidad'])->get();
+    {
+        // Cargamos relaciones para evitar consultas lentas (Eager Loading)
+        $proyectos = Proyecto::with(['avances', 'indicadores.avances', 'entidad'])->get();
+        return view('avances.index', compact('proyectos'));
+    }
 
-    // 2. Pasamos la variable a la vista
-    return view('avances.index', compact('proyectos'));
-}
-public function kardex()
-{
-    
-    $movimientos = \App\Models\Avance::with('proyecto')
-        ->orderBy('fecha_avance', 'desc') 
-        ->get();
+    public function kardex()
+    {
+        $movimientos = Avance::with(['proyecto', 'indicador']) // 'indicador' es la relación en el modelo Avance
+            ->orderBy('fecha_avance', 'desc') 
+            ->get();
 
-    return view('avances.kardex', compact('movimientos'));
-}
+        return view('avances.kardex', compact('movimientos'));
+    }
 }

@@ -6,24 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('programas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombrePrograma')->nullable;
-            $table->string('tipoPrograma')->nullable;
-            $table->string('version')->nullable;
-            $table->string('responsablePrograma')->nullable;  
+            // Relación con el Objetivo PND (El eslabón superior)
+            $table->foreignId('pnd_objetivo_id')
+                  ->nullable()
+                  ->constrained('pnd_objetivos')
+                  ->onDelete('set null');
+
+            $table->string('nombrePrograma')->nullable();
+            $table->string('tipoPrograma')->nullable();
+            $table->string('version')->nullable();
+            $table->string('responsablePrograma')->nullable();  
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('programas');

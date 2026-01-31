@@ -152,6 +152,18 @@
         </div>
         <h3>Kardex</h3>
     </a>
+
+    <a href="{{ route('alineacion.index') }}" class="card-item" style="border: 2px solid #10b981 !important; background: #f0fdf4 !important;">
+        {{-- Podrías pasar un conteo de objetivos cumplidos aquí --}}
+        <span class="badge-count" style="background: #10b981 !important;">Resumen</span>
+        
+        <div class="card-content-visual">
+            {{-- Usamos un icono de red o cadena para representar la alineación --}}
+            <img src="{{ asset('img/iconos/objetivo.png') }}" alt="Alineacion" class="card-icon-img" style="filter: hue-rotate(90deg);" onerror="this.parentElement.innerHTML='🔗'">
+        </div> 
+        <h3 style="color: #047857 !important;">Alineación Total</h3>
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 5px; text-align: center;">Vínculo PND + Políticas + ODS</p>
+    </a>
     @endcan
 
     @can('ver alertas')
