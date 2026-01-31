@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PndObjetivo;
-use App\Models\Politica; // Importante para manejar las políticas
+use App\Models\Politica; 
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -19,17 +19,14 @@ class PndObjetivoController extends Controller
     {
         /**
          * EXPLICACIÓN:
-         * 1. Traemos los objetivos del PND.
-         * 2. Cargamos 'proyectos': esto garantiza que cada proyecto se distribuya 
-         * solo en el objetivo que tiene asignado (pnd_objetivo_id).
-         * 3. Cargamos 'proyectos.entidad', 'proyectos.avances' y 'proyectos.indicadores' 
-         * para que la información de ejecución se distribuya correctamente por cada proyecto.
+         * Cargamos los objetivos y sus proyectos relacionados.
+         * De cada proyecto traemos su entidad, indicadores y avances para calcular el progreso real.
          */
         $objetivos = PndObjetivo::with([
             'politicas', 
-            'proyectos.entidad', 
-            'proyectos.avances', 
-            'proyectos.indicadores'
+            'proyectos' => function($query) {
+                $query->with(['entidad', 'indicadores', 'avances']);
+            }
         ])->get();
 
         return view('alineacionPND.index', compact('objetivos'));
@@ -86,9 +83,7 @@ class PndObjetivoController extends Controller
 
         $objetivo->update($request->only(['eje', 'nombre_objetivo', 'descripcion']));
 
-        // Sincronización de políticas
         if ($request->has('politicas_texto')) {
-            // Eliminamos las anteriores asociadas a este ID
             $objetivo->politicas()->delete(); 
 
             $lineas = explode("\n", str_replace("\r", "", $request->politicas_texto));
@@ -108,7 +103,6 @@ class PndObjetivoController extends Controller
     public function destroy($id)
     {
         $objetivo = PndObjetivo::findOrFail($id);
-        
         $objetivo->politicas()->delete();
         $objetivo->delete();
 
