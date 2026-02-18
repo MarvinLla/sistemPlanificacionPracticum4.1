@@ -6,7 +6,7 @@
     {{-- Encabezado Principal --}}
     <div style="margin-bottom: 30px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 6px solid #1e40af;">
         <h2 style="font-size: 1.8rem; font-weight: 800; color: #1e293b; margin: 0; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-sitemap" style="color: #1e40af;"></i> Alineación Estratégica PND
+            <i class="fas fa-sitemap" style="color: #1e40af;">Alineación Estratégica PND</i> 
         </h2>
         <p style="color: #64748b; margin: 5px 0 0 0; font-size: 1rem;">Seguimiento jerárquico de cumplimiento y metas ODS.</p>
     </div>

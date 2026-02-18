@@ -24,22 +24,11 @@ class PndObjetivo extends Model
     }
 
     public function proyectos()
-    {
-        return $this->hasManyThrough(
-            Proyecto::class,
-            Programa::class,
-            'pnd_objetivo_id', 
-            'programa_id',     
-            'id',              
-            'id'               
-        );
-    }
-
-    /**
-     * LÓGICA DINÁMICA ACTUALIZADA: 
-     * El cumplimiento nacional ahora es el promedio de los avances 
-     * reales de cada proyecto vinculado.
-     */
+{
+    // Relación directa: El proyecto pertenece al objetivo porque tiene su ID
+    return $this->hasMany(Proyecto::class, 'pnd_objetivo_id');
+}
+    
     public function calcularCumplimiento() 
     {
         // Obtenemos los proyectos vinculados a través de los programas

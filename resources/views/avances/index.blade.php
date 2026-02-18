@@ -5,10 +5,10 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <h2 style="font-size: 1.8rem; font-weight: bold; color: #1e293b; margin: 0;">🚀 Seguimiento de Avances</h2>
         @can('crear proyectos')
-            <a href="{{ route('avances.create') }}" style="background: #059669; color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: bold;">
-                + Registrar Avance
+            <a href="{{ route('avances.create') }}" style="background: #0f172a; color: white; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                + Registro General
             </a>
-        @endcan
+        @endcan 
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;">
@@ -27,7 +27,7 @@
             <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 5px solid {{ $diasRestantes < 0 ? '#ef4444' : '#3b82f6' }}; min-height: 480px; display: flex; flex-direction: column;">
                 
                 <div style="flex-grow: 1;">
-                    <h3 style="margin: 0; color: #1e293b;">{{ $proyecto->nombre }}</h3>
+                    <h3 style="margin: 0; color: #1e293b; font-size: 1.25rem;">{{ $proyecto->nombre }}</h3>
                     <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">📍 {{ $proyecto->entidad->nombre ?? 'Sin Entidad' }}</p>
 
                     {{-- Tiempo --}}
@@ -38,7 +38,7 @@
                         <span style="font-size: 0.75rem; color: #475569;">{{ $fechaFin->format('d/m/Y') }}</span>
                     </div>
 
-                    {{-- METAS INDIVIDUALES (CORREGIDO PARA MOSTRAR EL 100%) --}}
+                    {{-- METAS INDIVIDUALES --}}
                     <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
                         <p style="font-size: 0.7rem; font-weight: bold; color: #6366f1; text-transform: uppercase; margin-bottom: 10px;">🎯 Cumplimiento de Metas</p>
                         
@@ -69,10 +69,10 @@
                     </div>
                 </div>
 
-                {{-- FOOTER SINCRONIZADO --}}
+                {{-- FOOTER CON ACCIONES --}}
                 <div style="margin-top: auto;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                        <span style="color: #475569; font-weight: bold;">Progreso del Presupuesto</span>
+                        <span style="color: #475569; font-weight: bold;">Uso del Presupuesto</span>
                         <span style="font-weight: 900; color: #1e293b;">{{ number_format($porcentajeUsoGlobal, 2) }}%</span>
                     </div>
                     
@@ -85,14 +85,29 @@
                         <span>TOTAL: ${{ number_format($presupuestoTotal, 2) }}</span>
                     </div>
 
+                    {{-- SECCIÓN DE BOTONES --}}
                     <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span style="font-size: 0.65rem; color: #94a3b8; display: block;">Saldo Disponible</span>
                             <span style="font-size: 1.1rem; font-weight: 800; color: #059669;">${{ number_format($saldoDisponible, 2) }}</span>
                         </div>
-                        <a href="{{ route('kardex.index', $proyecto->id) }}" style="background: #3b82f6; color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">
-                            Ver Kardex →
-                        </a>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            {{-- Botón para ir directo a crear avance de ESTE proyecto --}}
+                            @can('crear proyectos')
+                                <a href="{{ route('avances.create', ['proyecto_id' => $proyecto->id]) }}" 
+                                   style="background: #059669; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 4px;"
+                                   title="Registrar nuevo avance">
+                                    <span>+</span> Avance
+                                </a>
+                            @endcan
+
+                            <a href="{{ route('kardex.index', $proyecto->id) }}" 
+                               style="background: #3b82f6; color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 0.75rem; font-weight: bold;"
+                               title="Ver historial detallado">
+                                Kardex →
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

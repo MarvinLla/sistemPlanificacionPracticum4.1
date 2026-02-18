@@ -9,7 +9,7 @@ class ODS extends Model
 {
     use HasFactory;
     protected $table = 'objetivos_ods';
-    protected $fillable = ['nombreObjetivo', 'descripcion'];
+    protected $fillable = ['nombreObjetivo', 'descripcion', 'metasAsociadas'];
 
     public function getMetasAttribute() {
         return collect([$this]);
